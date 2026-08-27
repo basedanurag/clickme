@@ -1,6 +1,6 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
 import type { User } from '../types';
-import api from '../api';
+import axios from 'axios';
 
 interface AuthContextType {
   user: User | null;
@@ -22,17 +22,23 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   useEffect(() => {
     const storedUser = localStorage.getItem('user');
     if (token) {
+      // Immediately show stored user so UI doesn't flash
       if (storedUser) {
-        try { setUser(JSON.parse(storedUser)); } catch { setUser(null); }
+        try { setUser(JSON.parse(storedUser)); } catch { /* ignore */ }
       }
-      // Always fetch fresh user data from backend
-      api.get('/auth/me').then(res => {
+      setIsLoading(false);
+      // Silently fetch fresh user data in background using plain axios
+      // (bypasses the global error interceptor so no error toasts show)
+      const baseURL = import.meta.env.VITE_API_URL || 'http://localhost:8080/api';
+      axios.get(`${baseURL}/auth/me`, {
+        headers: { Authorization: `Bearer ${token}` }
+      }).then(res => {
         const freshUser = res.data;
         setUser(freshUser);
         localStorage.setItem('user', JSON.stringify(freshUser));
       }).catch(() => {
-        // Token might be expired; interceptor will handle redirect
-      }).finally(() => setIsLoading(false));
+        // Silently ignore - user stays logged in with cached data
+      });
     } else {
       setUser(null);
       setIsLoading(false);
