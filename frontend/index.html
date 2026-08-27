@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>frontend-new</title>
+  </head>
+  <body>
+    <script>
+      window.addEventListener('error', function(e) {
+        document.body.innerHTML = '<div style="color:red;padding:20px;font-family:sans-serif;background:white;position:fixed;inset:0;z-index:9999;overflow:auto;"><h1>Runtime Error</h1><pre>' + (e.error ? e.error.stack : e.message) + '</pre></div>';
+      });
+      window.addEventListener('unhandledrejection', function(e) {
+        document.body.innerHTML = '<div style="color:red;padding:20px;font-family:sans-serif;background:white;position:fixed;inset:0;z-index:9999;overflow:auto;"><h1>Unhandled Promise Rejection</h1><pre>' + (e.reason ? (e.reason.stack || e.reason) : 'Unknown error') + '</pre></div>';
+      });
+    </script>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
