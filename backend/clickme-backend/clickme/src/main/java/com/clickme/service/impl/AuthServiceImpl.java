@@ -88,8 +88,10 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public UserResponse getCurrentUser() {
-        CustomUserDetails userDetails = (CustomUserDetails)
-                SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (!(principal instanceof CustomUserDetails userDetails)) {
+            throw new BadRequestException("Not authenticated.");
+        }
         User user = userDetails.getUser();
         return UserResponse.builder()
                 .id(user.getId())
