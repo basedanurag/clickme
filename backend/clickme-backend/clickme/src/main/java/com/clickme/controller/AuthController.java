@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import com.clickme.dto.request.LoginRequest;
 import com.clickme.dto.request.SignupRequest;
 import com.clickme.dto.response.AuthResponse;
+import com.clickme.dto.response.UserResponse;
 import com.clickme.service.AuthService;
 
 import jakarta.validation.Valid;
@@ -34,5 +35,10 @@ public class AuthController {
             @Valid @RequestBody LoginRequest request) {
 
         return ResponseEntity.ok(authService.login(request));
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<UserResponse> me() {
+        return ResponseEntity.ok(authService.getCurrentUser());
     }
 }

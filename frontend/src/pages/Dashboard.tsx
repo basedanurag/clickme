@@ -31,6 +31,13 @@ export default function Dashboard() {
   const { register, handleSubmit, reset, formState: { errors, isSubmitting } } = useForm<QuickCreateFormValues>({
     resolver: zodResolver(quickCreateSchema),
   });
+  const getGreeting = () => {
+    const hour = new Date().getHours();
+    if (hour < 12) return 'Good morning';
+    if (hour < 17) return 'Good afternoon';
+    return 'Good evening';
+  };
+
 
   useEffect(() => {
     fetchData();
@@ -71,7 +78,7 @@ export default function Dashboard() {
       {/* Header & Quick Create */}
       <div className="flex flex-col md:flex-row gap-6 justify-between items-start">
         <div>
-          <h1 className="text-3xl font-bold text-foreground">Good morning, {user?.name}</h1>
+          <h1 className="text-3xl font-bold text-foreground">{getGreeting()}, {user?.name || 'there'}!</h1>
           <p className="text-muted-foreground mt-1">Here is what's happening with your links today.</p>
         </div>
         

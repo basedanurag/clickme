@@ -1,5 +1,6 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
 import type { User } from '../types';
+import api from '../api';
 
 interface AuthContextType {
   user: User | null;
@@ -19,23 +20,23 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // In a real app, this would hit /api/auth/me using the token
-    // to get fresh user details. Since the backend lacks this currently,
-    // we use a stored user object in localStorage or mock it.
     const storedUser = localStorage.getItem('user');
-    
-    if (token && storedUser) {
-      try {
-        setUser(JSON.parse(storedUser));
-      } catch (e) {
-        setUser({ id: 1, name: 'User', email: 'user@example.com' });
+    if (token) {
+      if (storedUser) {
+        try { setUser(JSON.parse(storedUser)); } catch { setUser(null); }
       }
-    } else if (token) {
-      setUser({ id: 1, name: 'User', email: 'user@example.com' });
+      // Always fetch fresh user data from backend
+      api.get('/auth/me').then(res => {
+        const freshUser = res.data;
+        setUser(freshUser);
+        localStorage.setItem('user', JSON.stringify(freshUser));
+      }).catch(() => {
+        // Token might be expired; interceptor will handle redirect
+      }).finally(() => setIsLoading(false));
     } else {
       setUser(null);
+      setIsLoading(false);
     }
-    setIsLoading(false);
   }, [token]);
 
   const login = (newToken: string, newUser: User) => {

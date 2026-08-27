@@ -2,17 +2,20 @@ package com.clickme.service.impl;
 
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.clickme.dto.request.LoginRequest;
 import com.clickme.dto.request.SignupRequest;
 import com.clickme.dto.response.AuthResponse;
+import com.clickme.dto.response.UserResponse;
 import com.clickme.entity.User;
 import com.clickme.enums.AuthProvider;
 import com.clickme.enums.Role;
 import com.clickme.exception.BadRequestException;
 import com.clickme.repository.UserRepository;
+import com.clickme.security.CustomUserDetails;
 import com.clickme.security.jwt.JwtService;
 import com.clickme.service.AuthService;
 
@@ -80,6 +83,18 @@ public class AuthServiceImpl implements AuthService {
                 .accessToken(token)
                 .tokenType("Bearer")
                 .message("Login successful.")
+                .build();
+    }
+
+    @Override
+    public UserResponse getCurrentUser() {
+        CustomUserDetails userDetails = (CustomUserDetails)
+                SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User user = userDetails.getUser();
+        return UserResponse.builder()
+                .id(user.getId())
+                .name(user.getName())
+                .email(user.getEmail())
                 .build();
     }
 }

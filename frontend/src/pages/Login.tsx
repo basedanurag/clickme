@@ -33,7 +33,7 @@ export default function Login() {
         password: data.password
       });
       
-      login(response.accessToken, { id: 1, name: data.email.split('@')[0], email: data.email });
+      login(response.accessToken, { id: 0, name: '', email: data.email });
       toast.success('Successfully logged in!');
       navigate('/dashboard');
     } catch (err: any) {

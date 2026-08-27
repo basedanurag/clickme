@@ -193,13 +193,6 @@ public class UrlServiceImpl implements UrlService {
 
         UserAgentDetails uaDetails = userAgentService.parse(request);
 
-        // DEBUG OUTPUT
-        System.out.println("\n========== USER AGENT DEBUG ==========");
-        System.out.println("BROWSER        : " + uaDetails.getBrowser());
-        System.out.println("VERSION        : " + uaDetails.getBrowserVersion());
-        System.out.println("OS             : " + uaDetails.getOperatingSystem());
-        System.out.println("DEVICE         : " + uaDetails.getDevice());
-        System.out.println("======================================\n");
 
         clickLog.setBrowser(uaDetails.getBrowser());
         clickLog.setBrowserVersion(uaDetails.getBrowserVersion());
