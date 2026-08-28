@@ -24,6 +24,13 @@ public class RedisConfig {
         ObjectMapper redisObjectMapper = new ObjectMapper();
         redisObjectMapper.registerModule(new JavaTimeModule());
         redisObjectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        // Enable default typing so Jackson writes @class info into Redis. 
+        // Without this, it deserializes to a LinkedHashMap and causes a ClassCastException!
+        redisObjectMapper.activateDefaultTyping(
+                redisObjectMapper.getPolymorphicTypeValidator(),
+                ObjectMapper.DefaultTyping.NON_FINAL,
+                com.fasterxml.jackson.annotation.JsonTypeInfo.As.PROPERTY
+        );
 
         RedisTemplate<String, UrlCacheDto> template = new RedisTemplate<>();
 
