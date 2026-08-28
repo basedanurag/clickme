@@ -61,7 +61,7 @@ public class SecurityConfig {
                                 "/v3/api-docs/**")
                         .permitAll()
 
-                        .requestMatchers(HttpMethod.GET, "/**")
+                        .requestMatchers(HttpMethod.GET, "/{shortCode:[a-zA-Z0-9-_]+}")
                         .permitAll()
 
                         .anyRequest()
