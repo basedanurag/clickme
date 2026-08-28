@@ -25,7 +25,7 @@ export default function CreateUrl() {
   const [aliasStatus, setAliasStatus] = useState<'idle' | 'checking' | 'available' | 'taken'>('idle');
   const [createdUrl, setCreatedUrl] = useState<any>(null);
 
-  const { register, handleSubmit, watch, formState: { errors, isSubmitting } } = useForm<CreateUrlFormValues>({
+  const { register, handleSubmit, watch, reset, formState: { errors, isSubmitting } } = useForm<CreateUrlFormValues>({
     resolver: zodResolver(createUrlSchema),
     defaultValues: {
       expiration: 'never'
@@ -63,12 +63,20 @@ export default function CreateUrl() {
     }
 
     try {
+      let expiresAt = undefined;
+      if (data.expiration && data.expiration !== 'never') {
+        const date = new Date();
+        date.setDate(date.getDate() + parseInt(data.expiration));
+        expiresAt = date.toISOString();
+      }
+
       const response = await urlApi.createUrl({
         originalUrl: data.originalUrl,
         customAlias: data.customAlias || undefined,
-        // Backend expects specific expiration formats if supported. We mock it here.
+        expiresAt: expiresAt,
       });
       setCreatedUrl(response);
+      reset({ originalUrl: '', customAlias: '', expiration: 'never' });
       toast.success('URL created successfully!');
     } catch (error) {
       // Handled by interceptor
@@ -184,7 +192,6 @@ export default function CreateUrl() {
               <option value="7">7 Days</option>
               <option value="30">30 Days</option>
             </select>
-            <p className="text-xs text-muted-foreground mt-1">Note: Expiration logic requires backend API support.</p>
           </div>
 
           <div className="pt-4 border-t border-border flex justify-end">

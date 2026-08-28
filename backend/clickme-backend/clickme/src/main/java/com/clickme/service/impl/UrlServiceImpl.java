@@ -134,6 +134,9 @@ public class UrlServiceImpl implements UrlService {
                         new ResourceNotFoundException("URL not found."));
 
         urlRepository.delete(url);
+        
+        // Evict from Redis cache so the short link stops redirecting immediately
+        redisCacheService.deleteUrl(url.getShortCode());
     }
 
     @Override
