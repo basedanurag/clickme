@@ -141,7 +141,13 @@ public class UrlServiceImpl implements UrlService {
     public String redirectToOriginalUrl(String shortCode,
                                         HttpServletRequest request) {
 
-        UrlCacheDto cachedUrl = redisCacheService.getUrl(shortCode);
+        UrlCacheDto cachedUrl = null;
+        try {
+            cachedUrl = redisCacheService.getUrl(shortCode);
+        } catch (Exception e) {
+            // Log the error but continue to fallback to database
+            System.err.println("Redis cache error: " + e.getMessage());
+        }
         
         Long urlId;
         String originalUrl;

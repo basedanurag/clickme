@@ -25,6 +25,7 @@ public class Url {
 	@OneToMany(mappedBy = "url",
 	        cascade = CascadeType.ALL,
 	        orphanRemoval = true)
+	@Builder.Default
 	private List<ClickLog> clickLogs = new ArrayList<>();
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
