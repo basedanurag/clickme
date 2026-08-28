@@ -123,6 +123,14 @@
             <version>7.28.1</version>
         </dependency>
 
+        <!-- Jackson JSR-310 (Java 8+ date/time) module -->
+        <!-- Required to serialize/deserialize LocalDateTime in ApiResponse,  -->
+        <!-- UrlCacheDto, and any other Java time types via ObjectMapper.      -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jsr310</artifactId>
+        </dependency>
+
     </dependencies>
 
     <build>

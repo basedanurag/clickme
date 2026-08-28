@@ -17,7 +17,14 @@ import jakarta.servlet.http.HttpServletResponse;
 @Component
 public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    // Inject Spring Boot's auto-configured ObjectMapper which already has
+    // JavaTimeModule registered — fixes LocalDateTime serialization.
+    // DO NOT use `new ObjectMapper()` here; it has zero modules by default.
+    private final ObjectMapper objectMapper;
+
+    public JwtAuthenticationEntryPoint(ObjectMapper objectMapper) {
+        this.objectMapper = objectMapper;
+    }
 
     @Override
     public void commence(
