@@ -13,6 +13,7 @@ public class YauaaConfig {
         // It's recommended to do this as a singleton Bean.
         UserAgentAnalyzer analyzer = UserAgentAnalyzer
             .newBuilder()
+            .dropTests() // Drops test cases to reduce memory consumption during initialization
             .hideMatcherLoadStats()
             .withCache(1000)
             .withField("AgentName")
