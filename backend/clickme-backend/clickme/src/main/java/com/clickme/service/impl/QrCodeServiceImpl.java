@@ -22,6 +22,9 @@ public class QrCodeServiceImpl implements QrCodeService {
 
     private final UrlRepository urlRepository;
 
+    @org.springframework.beans.factory.annotation.Value("${app.base-url}")
+    private String baseUrl;
+
     public QrCodeServiceImpl(UrlRepository urlRepository) {
         this.urlRepository = urlRepository;
     }
@@ -33,7 +36,7 @@ public class QrCodeServiceImpl implements QrCodeService {
                 .orElseThrow(() ->
                         new ResourceNotFoundException("URL not found"));
 
-        String shortUrl = "http://localhost:8080/" + url.getShortCode();
+        String shortUrl = baseUrl + "/" + url.getShortCode();
 
         QRCodeWriter qrCodeWriter = new QRCodeWriter();
 
