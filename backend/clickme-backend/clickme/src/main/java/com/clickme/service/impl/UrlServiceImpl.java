@@ -206,8 +206,9 @@ public class UrlServiceImpl implements UrlService {
 
             URI uri = URI.create(originalUrl);
 
-            if (uri.getScheme() == null || uri.getHost() == null) {
-                throw new BadRequestException("Invalid URL.");
+            if (uri.getScheme() == null || uri.getHost() == null || 
+                (!uri.getScheme().equalsIgnoreCase("http") && !uri.getScheme().equalsIgnoreCase("https"))) {
+                throw new BadRequestException("Invalid URL. Only HTTP and HTTPS are allowed.");
             }
 
         } catch (Exception ex) {

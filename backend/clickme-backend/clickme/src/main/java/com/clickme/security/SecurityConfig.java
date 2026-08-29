@@ -78,9 +78,8 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         // Parse the comma-separated origins list from the environment variable
-        List<String> allowedOrigins = List.of(allowedOriginsRaw.split(","))
-                .stream()
-                .map(String::trim)
+        List<String> allowedOrigins = java.util.Arrays.stream(allowedOriginsRaw.split(","))
+                .map(s -> s.trim())
                 .toList();
 
         CorsConfiguration configuration = new CorsConfiguration();

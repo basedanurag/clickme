@@ -112,7 +112,7 @@ public class AnalyticsServiceImpl implements AnalyticsService {
         for (Object[] row : rows) {
             String key   = (row[0] == null || row[0].toString().isBlank()) ? "Unknown" : row[0].toString();
             Long   count = ((Number) row[1]).longValue();
-            result.merge(key, count, Long::sum);
+            result.merge(key, count, (a, b) -> a + b);
         }
         return result;
     }
