@@ -21,6 +21,7 @@ public class CreateUrlRequest {
 
     // Optional custom alias
     @Size(max = 20, message = "Custom alias cannot exceed 20 characters")
+    @jakarta.validation.constraints.Pattern(regexp = "^[a-zA-Z0-9-_]*$", message = "Custom alias can only contain letters, numbers, dashes, and underscores")
     private String customAlias;
 
     // Optional expiration date

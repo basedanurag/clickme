@@ -14,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.clickme.dto.cache.UrlCacheDto;
 import com.clickme.dto.request.CreateUrlRequest;
 import com.clickme.dto.response.UrlResponse;
-import com.clickme.entity.ClickLog;
 import com.clickme.entity.Url;
 import com.clickme.entity.User;
 import com.clickme.exception.BadRequestException;
@@ -24,7 +23,6 @@ import com.clickme.security.CustomUserDetails;
 import com.clickme.service.ClickLogService;
 import com.clickme.service.RedisCacheService;
 import com.clickme.service.UrlService;
-import com.clickme.service.AiService;
 import com.clickme.util.ShortCodeGenerator;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -35,19 +33,16 @@ public class UrlServiceImpl implements UrlService {
     private final UrlRepository urlRepository;
     private final ClickLogService clickLogService;
     private final RedisCacheService redisCacheService;
-    private final AiService aiService;
 
     @Value("${app.base-url}")
     private String baseUrl;
 
     public UrlServiceImpl(UrlRepository urlRepository,
                           ClickLogService clickLogService,
-                          RedisCacheService redisCacheService,
-                          AiService aiService) {
+                          RedisCacheService redisCacheService) {
         this.urlRepository = urlRepository;
         this.clickLogService = clickLogService;
         this.redisCacheService = redisCacheService;
-        this.aiService = aiService;
     }
 
     @Override
@@ -75,7 +70,7 @@ public class UrlServiceImpl implements UrlService {
             } while (urlRepository.existsByShortCode(shortCode));
         }
 
-        String category = aiService.categorizeUrl(request.getOriginalUrl());
+        String category = "Uncategorized";
 
         Url url = Url.builder()
                 .originalUrl(request.getOriginalUrl())

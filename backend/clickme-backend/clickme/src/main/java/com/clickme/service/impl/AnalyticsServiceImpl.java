@@ -88,56 +88,33 @@ public class AnalyticsServiceImpl implements AnalyticsService {
                 .orElseThrow(() ->
                         new ResourceNotFoundException("URL not found"));
 
-        List<ClickLog> logs = clickLogRepository.findByUrlId(url.getId());
-
-        Map<String, Long> browsers = new HashMap<>();
-        Map<String, Long> operatingSystems = new HashMap<>();
-        Map<String, Long> devices = new HashMap<>();
-        Map<String, Long> referrers = new HashMap<>();
-
-        for (ClickLog log : logs) {
-
-            // Browser
-            String browser = (log.getBrowser() == null || log.getBrowser().isBlank())
-                    ? "Unknown"
-                    : log.getBrowser();
-
-            browsers.put(browser,
-                    browsers.getOrDefault(browser, 0L) + 1);
-
-            // Operating System
-            String os = (log.getOperatingSystem() == null || log.getOperatingSystem().isBlank())
-                    ? "Unknown"
-                    : log.getOperatingSystem();
-
-            operatingSystems.put(os,
-                    operatingSystems.getOrDefault(os, 0L) + 1);
-
-            // Device
-            String device = (log.getDevice() == null || log.getDevice().isBlank())
-                    ? "Unknown"
-                    : log.getDevice();
-
-            devices.put(device,
-                    devices.getOrDefault(device, 0L) + 1);
-
-            // Referrer
-            String referer = (log.getReferer() == null || log.getReferer().isBlank())
-                    ? "Direct"
-                    : log.getReferer();
-
-            referrers.put(referer,
-                    referrers.getOrDefault(referer, 0L) + 1);
-        }
+        // Each of these fires a single GROUP BY query — no full-table load.
+        Map<String, Long> browsers   = toMap(clickLogRepository.countByBrowserForUrl(url.getId()));
+        Map<String, Long> oses       = toMap(clickLogRepository.countByOsForUrl(url.getId()));
+        Map<String, Long> devices    = toMap(clickLogRepository.countByDeviceForUrl(url.getId()));
+        Map<String, Long> referrers  = toMap(clickLogRepository.countByRefererForUrl(url.getId()));
 
         AnalyticsBreakdownResponse response = new AnalyticsBreakdownResponse();
-
         response.setBrowsers(browsers);
-        response.setOperatingSystems(operatingSystems);
+        response.setOperatingSystems(oses);
         response.setDevices(devices);
         response.setReferrers(referrers);
 
         return response;
+    }
+
+    /**
+     * Converts a list of [String, Long] Object[] rows (returned by GROUP BY
+     * aggregate queries) into a Map, replacing null keys with a readable label.
+     */
+    private Map<String, Long> toMap(java.util.List<Object[]> rows) {
+        Map<String, Long> result = new HashMap<>();
+        for (Object[] row : rows) {
+            String key   = (row[0] == null || row[0].toString().isBlank()) ? "Unknown" : row[0].toString();
+            Long   count = ((Number) row[1]).longValue();
+            result.merge(key, count, Long::sum);
+        }
+        return result;
     }
 
     private User getCurrentUser() {
@@ -145,4 +122,4 @@ public class AnalyticsServiceImpl implements AnalyticsService {
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
         return userDetails.getUser();
     }
-}
+}

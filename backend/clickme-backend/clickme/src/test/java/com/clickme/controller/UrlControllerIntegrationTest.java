@@ -5,8 +5,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -26,7 +24,6 @@ import com.clickme.enums.AuthProvider;
 import com.clickme.enums.Role;
 import com.clickme.repository.UrlRepository;
 import com.clickme.repository.UserRepository;
-import com.clickme.service.AiService;
 import com.clickme.service.RedisCacheService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -50,9 +47,6 @@ public class UrlControllerIntegrationTest {
     @MockitoBean
     private RedisCacheService redisCacheService;
 
-    @MockitoBean
-    private AiService aiService;
-
     private User testUser;
 
     @BeforeEach
@@ -69,8 +63,6 @@ public class UrlControllerIntegrationTest {
                 .active(true)
                 .build();
         testUser = userRepository.save(testUser);
-
-        when(aiService.categorizeUrl(any())).thenReturn("Technology");
     }
 
     @Test
@@ -91,7 +83,7 @@ public class UrlControllerIntegrationTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.originalUrl").value("https://spring.io"))
                 .andExpect(jsonPath("$.shortCode").exists())
-                .andExpect(jsonPath("$.category").value("Technology"));
+                .andExpect(jsonPath("$.category").value("Uncategorized"));
     }
 
     @Test
