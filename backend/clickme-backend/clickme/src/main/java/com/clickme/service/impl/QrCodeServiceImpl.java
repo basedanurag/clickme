@@ -5,9 +5,13 @@ import java.io.ByteArrayOutputStream;
 import org.springframework.stereotype.Service;
 
 import com.clickme.entity.Url;
+import com.clickme.entity.User;
 import com.clickme.exception.ResourceNotFoundException;
 import com.clickme.repository.UrlRepository;
+import com.clickme.security.CustomUserDetails;
 import com.clickme.service.QrCodeService;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
@@ -25,7 +29,7 @@ public class QrCodeServiceImpl implements QrCodeService {
     @Override
     public byte[] generateQrCode(Long urlId) throws Exception {
 
-        Url url = urlRepository.findById(urlId)
+        Url url = urlRepository.findByIdAndUser(urlId, getCurrentUser())
                 .orElseThrow(() ->
                         new ResourceNotFoundException("URL not found"));
 
@@ -49,5 +53,11 @@ public class QrCodeServiceImpl implements QrCodeService {
         );
 
         return outputStream.toByteArray();
+    }
+
+    private User getCurrentUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        return userDetails.getUser();
     }
 }

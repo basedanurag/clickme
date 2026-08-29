@@ -19,14 +19,12 @@ import com.clickme.entity.Url;
 import com.clickme.entity.User;
 import com.clickme.exception.BadRequestException;
 import com.clickme.exception.ResourceNotFoundException;
-import com.clickme.repository.ClickLogRepository;
 import com.clickme.repository.UrlRepository;
 import com.clickme.security.CustomUserDetails;
+import com.clickme.service.ClickLogService;
 import com.clickme.service.RedisCacheService;
 import com.clickme.service.UrlService;
 import com.clickme.service.AiService;
-import com.clickme.service.UserAgentService;
-import com.clickme.dto.UserAgentDetails;
 import com.clickme.util.ShortCodeGenerator;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -35,24 +33,21 @@ import jakarta.servlet.http.HttpServletRequest;
 public class UrlServiceImpl implements UrlService {
 
     private final UrlRepository urlRepository;
-    private final ClickLogRepository clickLogRepository;
+    private final ClickLogService clickLogService;
     private final RedisCacheService redisCacheService;
     private final AiService aiService;
-    private final UserAgentService userAgentService;
 
     @Value("${app.base-url}")
     private String baseUrl;
 
     public UrlServiceImpl(UrlRepository urlRepository,
-                          ClickLogRepository clickLogRepository,
+                          ClickLogService clickLogService,
                           RedisCacheService redisCacheService,
-                          AiService aiService,
-                          UserAgentService userAgentService) {
+                          AiService aiService) {
         this.urlRepository = urlRepository;
-        this.clickLogRepository = clickLogRepository;
+        this.clickLogService = clickLogService;
         this.redisCacheService = redisCacheService;
         this.aiService = aiService;
-        this.userAgentService = userAgentService;
     }
 
     @Override
@@ -194,23 +189,7 @@ public class UrlServiceImpl implements UrlService {
         urlRepository.incrementClickCount(urlId);
 
         // Create click log
-        ClickLog clickLog = new ClickLog();
-
-        clickLog.setUrl(urlRepository.getReferenceById(urlId));
-        clickLog.setClickedAt(LocalDateTime.now());
-        clickLog.setIpAddress(request.getRemoteAddr());
-
-        UserAgentDetails uaDetails = userAgentService.parse(request);
-
-
-        clickLog.setBrowser(uaDetails.getBrowser());
-        clickLog.setBrowserVersion(uaDetails.getBrowserVersion());
-        clickLog.setOperatingSystem(uaDetails.getOperatingSystem());
-        clickLog.setDevice(uaDetails.getDevice());
-
-        clickLog.setReferer(request.getHeader("Referer"));
-
-        clickLogRepository.save(clickLog);
+        clickLogService.logClick(urlRepository.getReferenceById(urlId), request);
 
         return originalUrl;
     }

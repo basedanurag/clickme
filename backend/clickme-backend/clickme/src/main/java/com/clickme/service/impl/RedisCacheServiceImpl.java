@@ -25,25 +25,35 @@ public class RedisCacheServiceImpl implements RedisCacheService {
 
     @Override
     public void saveUrl(UrlCacheDto url) {
-
-        redisTemplate.opsForValue().set(
-                PREFIX + url.getShortCode(),
-                url,
-                CACHE_TTL
-        );
+        try {
+            redisTemplate.opsForValue().set(
+                    PREFIX + url.getShortCode(),
+                    url,
+                    CACHE_TTL
+            );
+        } catch (Exception e) {
+            System.err.println("Redis cache save error: " + e.getMessage());
+        }
     }
 
     @Override
     public UrlCacheDto getUrl(String shortCode) {
-
-        return redisTemplate.opsForValue().get(
-                PREFIX + shortCode
-        );
+        try {
+            return redisTemplate.opsForValue().get(
+                    PREFIX + shortCode
+            );
+        } catch (Exception e) {
+            System.err.println("Redis cache get error: " + e.getMessage());
+            return null;
+        }
     }
 
     @Override
     public void deleteUrl(String shortCode) {
-
-        redisTemplate.delete(PREFIX + shortCode);
+        try {
+            redisTemplate.delete(PREFIX + shortCode);
+        } catch (Exception e) {
+            System.err.println("Redis cache delete error: " + e.getMessage());
+        }
     }
 }

@@ -13,10 +13,14 @@ import com.clickme.dto.response.AnalyticsResponse;
 import com.clickme.dto.response.DailyClickResponse;
 import com.clickme.entity.ClickLog;
 import com.clickme.entity.Url;
+import com.clickme.entity.User;
 import com.clickme.exception.ResourceNotFoundException;
 import com.clickme.repository.ClickLogRepository;
 import com.clickme.repository.UrlRepository;
+import com.clickme.security.CustomUserDetails;
 import com.clickme.service.AnalyticsService;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 @Service
 public class AnalyticsServiceImpl implements AnalyticsService {
@@ -34,7 +38,7 @@ public class AnalyticsServiceImpl implements AnalyticsService {
     @Override
     public AnalyticsResponse getAnalytics(Long urlId) {
 
-        Url url = urlRepository.findById(urlId)
+        Url url = urlRepository.findByIdAndUser(urlId, getCurrentUser())
                 .orElseThrow(() ->
                         new ResourceNotFoundException("URL not found"));
 
@@ -80,7 +84,7 @@ public class AnalyticsServiceImpl implements AnalyticsService {
     @Override
     public AnalyticsBreakdownResponse getBreakdown(Long urlId) {
 
-        Url url = urlRepository.findById(urlId)
+        Url url = urlRepository.findByIdAndUser(urlId, getCurrentUser())
                 .orElseThrow(() ->
                         new ResourceNotFoundException("URL not found"));
 
@@ -134,5 +138,11 @@ public class AnalyticsServiceImpl implements AnalyticsService {
         response.setReferrers(referrers);
 
         return response;
+    }
+
+    private User getCurrentUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        return userDetails.getUser();
     }
 }
