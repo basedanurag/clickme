@@ -22,7 +22,12 @@ public class OAuth2AuthenticationFailureHandler extends SimpleUrlAuthenticationF
             AuthenticationException exception) throws IOException, ServletException {
         
         String frontendUrl = allowedOriginsRaw.split(",")[0].trim();
-        String targetUrl = frontendUrl + "/login?error=oauth2_failed";
+        
+        // Encode the error message to safely pass it in the URL
+        String errorMessage = exception.getMessage() != null ? exception.getMessage() : "unknown_error";
+        String encodedError = java.net.URLEncoder.encode(errorMessage, java.nio.charset.StandardCharsets.UTF_8);
+        
+        String targetUrl = frontendUrl + "/login?error=oauth2_failed&details=" + encodedError;
         
         getRedirectStrategy().sendRedirect(request, response, targetUrl);
     }
