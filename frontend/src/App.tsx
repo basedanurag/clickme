@@ -62,7 +62,7 @@ function AppRoutes() {
       <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
       <Route path="/admin/login" element={<PublicRoute><AdminLogin /></PublicRoute>} />
       <Route path="/signup" element={<PublicRoute><Signup /></PublicRoute>} />
-      <Route path="/oauth2/callback" element={<PublicRoute><OAuth2Callback /></PublicRoute>} />
+      <Route path="/oauth2/callback" element={<OAuth2Callback />} />
       
       <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
       <Route path="/urls" element={<ProtectedRoute><MyUrls /></ProtectedRoute>} />

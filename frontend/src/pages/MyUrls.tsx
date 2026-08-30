@@ -105,24 +105,25 @@ export default function MyUrls() {
       </div>
 
       {/* Toolbar */}
-      <div className="bg-card border border-border p-4 rounded-xl shadow-sm flex flex-col md:flex-row gap-4 justify-between items-center">
-        <div className="w-full md:w-96 relative">
+      <div className="bg-black/40 backdrop-blur-md border border-white/5 p-4 rounded-2xl shadow-xl flex flex-col md:flex-row gap-4 justify-between items-center relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-r from-blue-500/5 to-transparent pointer-events-none"></div>
+        <div className="w-full md:w-96 relative z-10">
           <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-            <Search className="h-4 w-4 text-muted-foreground" />
+            <Search className="h-4 w-4 text-gray-500" />
           </div>
           <Input 
             placeholder="Search original URL or alias..." 
-            className="pl-9 h-9"
+            className="pl-9 h-10 bg-black/50 border-white/10 text-white focus:ring-primary/50 focus:border-primary/50 rounded-xl transition-all"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
         </div>
         
-        <div className="flex items-center gap-3 w-full md:w-auto overflow-x-auto">
+        <div className="flex items-center gap-3 w-full md:w-auto overflow-x-auto z-10">
           <select 
             value={filterStatus}
             onChange={(e) => setFilterStatus(e.target.value as any)}
-            className="h-9 rounded-md border border-input bg-background px-3 py-1 text-sm text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            className="h-10 rounded-xl border border-white/10 bg-black/50 px-3 py-1 text-sm text-gray-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 cursor-pointer transition-all"
           >
             <option value="all">All Status</option>
             <option value="active">Active Only</option>
@@ -132,7 +133,7 @@ export default function MyUrls() {
           <select 
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value as any)}
-            className="h-9 rounded-md border border-input bg-background px-3 py-1 text-sm text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            className="h-10 rounded-xl border border-white/10 bg-black/50 px-3 py-1 text-sm text-gray-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 cursor-pointer transition-all"
           >
             <option value="newest">Newest First</option>
             <option value="oldest">Oldest First</option>
@@ -158,9 +159,9 @@ export default function MyUrls() {
       )}
 
       {/* Table */}
-      <div className="bg-card border border-border rounded-xl shadow-sm overflow-hidden">
+      <div className="bg-black/40 backdrop-blur-md border border-white/5 rounded-2xl shadow-2xl overflow-hidden relative">
         {isLoading ? (
-          <div className="p-12 text-center text-muted-foreground">Loading your links...</div>
+          <div className="p-16 text-center text-gray-500 animate-pulse text-lg">Loading your links...</div>
         ) : filteredUrls.length === 0 ? (
           <div className="p-12 text-center text-muted-foreground">
             No links found. {searchQuery ? 'Try adjusting your search.' : 'Create your first link!'}
@@ -169,87 +170,86 @@ export default function MyUrls() {
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="border-b border-border bg-muted/50">
+                <tr className="border-b border-white/5 bg-white/[0.02]">
                   <th className="p-4 w-12">
                     <input 
                       type="checkbox" 
-                      className="rounded border-input text-primary focus:ring-ring"
+                      className="rounded border-white/20 bg-black/50 text-primary focus:ring-primary/50 focus:ring-offset-0"
                       checked={selectedUrls.size > 0 && selectedUrls.size === filteredUrls.length}
                       onChange={selectAll}
                     />
                   </th>
-                  <th className="p-4 font-medium text-muted-foreground text-sm">Short Link</th>
-                  <th className="p-4 font-medium text-muted-foreground text-sm hidden sm:table-cell">Original URL</th>
-                  <th className="p-4 font-medium text-muted-foreground text-sm">Clicks</th>
-                  <th className="p-4 font-medium text-muted-foreground text-sm hidden md:table-cell">Created</th>
-                  <th className="p-4 font-medium text-muted-foreground text-sm">Status</th>
+                  <th className="p-4 font-semibold text-gray-400 text-sm tracking-wide">Short Link</th>
+                  <th className="p-4 font-semibold text-gray-400 text-sm tracking-wide hidden sm:table-cell">Original URL</th>
+                  <th className="p-4 font-semibold text-gray-400 text-sm tracking-wide">Clicks</th>
+                  <th className="p-4 font-semibold text-gray-400 text-sm tracking-wide hidden md:table-cell">Created</th>
+                  <th className="p-4 font-semibold text-gray-400 text-sm tracking-wide">Status</th>
                   <th className="p-4 w-12"></th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-border">
+              <tbody className="divide-y divide-white/5">
                 {filteredUrls.map(url => (
-                  <tr key={url.id} className="hover:bg-muted/30 transition-colors group">
+                  <tr key={url.id} className="hover:bg-white/[0.03] transition-colors group">
                     <td className="p-4">
                       <input 
                         type="checkbox" 
-                        className="rounded border-input text-primary focus:ring-ring"
+                        className="rounded border-white/20 bg-black/50 text-primary focus:ring-primary/50 focus:ring-offset-0"
                         checked={selectedUrls.has(url.id)}
                         onChange={() => toggleSelection(url.id)}
                       />
                     </td>
                     <td className="p-4">
                       <div className="flex items-center gap-2">
-                        <a href={url.shortUrl} target="_blank" rel="noopener noreferrer" className="font-medium text-primary hover:underline">
+                        <a href={url.shortUrl} target="_blank" rel="noopener noreferrer" className="font-semibold text-primary text-lg hover:text-blue-400 transition-colors">
                           /{url.shortCode}
                         </a>
-                        <button onClick={() => copyToClipboard(url.shortUrl)} className="text-muted-foreground hover:text-foreground opacity-0 group-hover:opacity-100 transition-opacity" title="Copy">
-                          <Copy size={14} />
+                        <button onClick={() => copyToClipboard(url.shortUrl)} className="text-gray-500 hover:text-white opacity-0 group-hover:opacity-100 transition-all" title="Copy">
+                          <Copy size={16} />
                         </button>
                       </div>
                     </td>
                     <td className="p-4 hidden sm:table-cell max-w-[200px] lg:max-w-[400px]">
-                      <div className="truncate text-sm text-muted-foreground" title={url.originalUrl}>
+                      <div className="truncate text-sm text-gray-400 group-hover:text-gray-300 transition-colors" title={url.originalUrl}>
                         {url.originalUrl}
                       </div>
                     </td>
-                    <td className="p-4 font-medium text-foreground">{url.clickCount.toLocaleString()}</td>
-                    <td className="p-4 hidden md:table-cell text-sm text-muted-foreground">
+                    <td className="p-4 font-bold text-white text-lg">{url.clickCount.toLocaleString()}</td>
+                    <td className="p-4 hidden md:table-cell text-sm text-gray-500">
                       <div className="flex items-center gap-1.5">
-                        <Calendar size={14} />
+                        <Calendar size={14} className="text-gray-600" />
                         {new Date(url.createdAt).toLocaleDateString()}
                       </div>
                     </td>
                     <td className="p-4">
-                      {url.active ? <Badge variant="success">Active</Badge> : <Badge variant="destructive">Disabled</Badge>}
+                      {url.active ? <Badge variant="success" className="bg-green-500/10 text-green-400 border-green-500/20">Active</Badge> : <Badge variant="destructive" className="bg-red-500/10 text-red-400 border-red-500/20">Disabled</Badge>}
                     </td>
                     <td className="p-4 text-right">
-                      {/* Using a native HTML details/summary as a simple popover menu without external libs */}
                       <details className="relative inline-block text-left" style={{ cursor: 'pointer' }}>
-                        <summary className="list-none p-1 rounded-md hover:bg-accent text-muted-foreground hover:text-foreground focus:outline-none focus:ring-2 focus:ring-ring">
-                          <MoreVertical size={18} />
+                        <summary className="list-none p-1.5 rounded-lg hover:bg-white/10 text-gray-500 hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-primary/50">
+                          <MoreVertical size={20} />
                         </summary>
-                        <div className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-popover text-popover-foreground shadow-md ring-1 ring-border focus:outline-none overflow-hidden">
+                        <div className="absolute right-0 z-50 mt-2 w-48 origin-top-right rounded-xl bg-[#0a0a0a] border border-gray-800 text-gray-200 shadow-2xl focus:outline-none overflow-hidden">
                           <div className="py-1">
-                            <button onClick={() => copyToClipboard(url.shortUrl)} className="w-full text-left px-4 py-2 text-sm hover:bg-accent flex items-center gap-2">
+                            <button onClick={() => copyToClipboard(url.shortUrl)} className="w-full text-left px-4 py-2 text-sm hover:bg-white/5 flex items-center gap-2 transition-colors">
                               <Copy size={16} /> Copy
                             </button>
-                            <button onClick={() => navigate(`/urls/${url.id}/analytics`)} className="w-full text-left px-4 py-2 text-sm hover:bg-accent flex items-center gap-2">
+                            <button onClick={() => navigate(`/urls/${url.id}/analytics`)} className="w-full text-left px-4 py-2 text-sm hover:bg-white/5 flex items-center gap-2 transition-colors">
                               <BarChart2 size={16} /> Analytics
                             </button>
-                            <button onClick={() => navigate(`/urls/${url.id}/qr`)} className="w-full text-left px-4 py-2 text-sm hover:bg-accent flex items-center gap-2">
+                            <button onClick={() => navigate(`/urls/${url.id}/qr`)} className="w-full text-left px-4 py-2 text-sm hover:bg-white/5 flex items-center gap-2 transition-colors">
                               <QrCode size={16} /> QR Code
                             </button>
-                            <a href={url.shortUrl} target="_blank" rel="noopener noreferrer" className="w-full text-left px-4 py-2 text-sm hover:bg-accent flex items-center gap-2">
+                            <a href={url.shortUrl} target="_blank" rel="noopener noreferrer" className="w-full text-left px-4 py-2 text-sm hover:bg-white/5 flex items-center gap-2 transition-colors">
                               <ExternalLink size={16} /> Open
                             </a>
-                            <div className="h-px bg-border my-1"></div>
-                            <button onClick={() => toast.error('Edit URL feature requires backend API support')} className="w-full text-left px-4 py-2 text-sm hover:bg-accent flex items-center gap-2">
+                            <div className="h-px bg-gray-800 my-1"></div>
+                            <button onClick={() => toast.error('Edit URL feature requires backend API support')} className="w-full text-left px-4 py-2 text-sm hover:bg-white/5 flex items-center gap-2 transition-colors">
                               <Edit2 size={16} /> Edit
                             </button>
-                            <button onClick={() => toast.error('Disable URL feature requires backend API support')} className="w-full text-left px-4 py-2 text-sm text-amber-600 hover:bg-accent flex items-center gap-2">
+                            <button onClick={() => toast.error('Disable URL feature requires backend API support')} className="w-full text-left px-4 py-2 text-sm text-orange-400 hover:bg-white/5 flex items-center gap-2 transition-colors">
                               <Ban size={16} /> Disable
                             </button>
-                            <button onClick={() => deleteUrl(url.id)} className="w-full text-left px-4 py-2 text-sm text-destructive hover:bg-accent flex items-center gap-2">
+                            <button onClick={() => deleteUrl(url.id)} className="w-full text-left px-4 py-2 text-sm text-red-500 hover:bg-red-500/10 flex items-center gap-2 transition-colors">
                               <Trash2 size={16} /> Delete
                             </button>
                           </div>

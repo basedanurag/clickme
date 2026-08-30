@@ -76,19 +76,21 @@ export default function Dashboard() {
     <div className="space-y-8 animate-in fade-in duration-500">
       
       {/* Header & Quick Create */}
-      <div className="flex flex-col md:flex-row gap-6 justify-between items-start">
-        <div>
-          <h1 className="text-3xl font-bold text-foreground">{getGreeting()}, {user?.name || 'there'}!</h1>
-          <p className="text-muted-foreground mt-1">Here is what's happening with your links today.</p>
+      <div className="flex flex-col md:flex-row gap-6 justify-between items-start bg-black/40 backdrop-blur-xl p-8 rounded-2xl border border-white/5 shadow-2xl relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-64 h-64 bg-primary/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none"></div>
+        <div className="z-10">
+          <h1 className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-400">{getGreeting()}, {user?.name || 'there'}!</h1>
+          <p className="text-gray-400 mt-2 text-lg">Here is what's happening with your links today.</p>
         </div>
         
-        <form onSubmit={handleSubmit(onQuickCreate)} className="w-full md:w-auto flex flex-col sm:flex-row gap-3">
+        <form onSubmit={handleSubmit(onQuickCreate)} className="w-full md:w-auto flex flex-col sm:flex-row gap-3 z-10">
           <div className="flex flex-col sm:flex-row gap-3">
             <div className="w-full sm:w-64">
               <Input
                 placeholder="Paste your long URL"
                 {...register('originalUrl')}
                 error={errors.originalUrl?.message}
+                className="bg-black/50 border-gray-800 text-white focus:ring-primary/50"
               />
             </div>
             <div className="w-full sm:w-40">
@@ -96,10 +98,11 @@ export default function Dashboard() {
                 placeholder="Custom alias (opt)"
                 {...register('customAlias')}
                 error={errors.customAlias?.message}
+                className="bg-black/50 border-gray-800 text-white focus:ring-primary/50"
               />
             </div>
           </div>
-          <Button type="submit" isLoading={isSubmitting} className="whitespace-nowrap">
+          <Button type="submit" isLoading={isSubmitting} className="whitespace-nowrap bg-primary hover:bg-primary/90 shadow-[0_0_20px_rgba(59,130,246,0.3)] transition-all">
             Shorten URL
           </Button>
         </form>
@@ -133,41 +136,44 @@ export default function Dashboard() {
 
       <div className="grid grid-cols-1 lg:grid-cols-1 gap-6">
         {/* Recent Links */}
-        <div className="bg-card border border-border rounded-xl shadow-sm overflow-hidden">
-          <div className="p-6 border-b border-border flex justify-between items-center">
-            <h2 className="text-lg font-semibold text-foreground">Recent Links</h2>
-            <Button variant="ghost" size="sm" onClick={() => navigate('/urls')}>
+        <div className="bg-black/40 backdrop-blur-md border border-white/5 rounded-2xl shadow-xl overflow-hidden relative">
+          <div className="p-6 border-b border-white/5 flex justify-between items-center bg-white/5">
+            <h2 className="text-xl font-bold text-white flex items-center gap-2">
+              <Activity className="w-5 h-5 text-primary" />
+              Recent Links
+            </h2>
+            <Button variant="ghost" size="sm" onClick={() => navigate('/urls')} className="text-gray-400 hover:text-white">
               View all <ArrowRight size={16} className="ml-2" />
             </Button>
           </div>
           
-          <div className="divide-y divide-border">
+          <div className="divide-y divide-white/5">
             {isLoading ? (
-              <div className="p-8 text-center text-muted-foreground">Loading...</div>
+              <div className="p-12 text-center text-gray-500 animate-pulse">Loading links...</div>
             ) : urls.length === 0 ? (
-              <div className="p-8 text-center text-muted-foreground">No links created yet.</div>
+              <div className="p-12 text-center text-gray-500">No links created yet.</div>
             ) : (
               urls.slice(0, 5).map(url => (
-                <div key={url.id} className="p-6 hover:bg-accent/50 transition-colors flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div key={url.id} className="p-6 hover:bg-white/[0.02] transition-colors flex flex-col sm:flex-row sm:items-center justify-between gap-4 group">
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-3 mb-1">
-                      <a href={url.shortUrl} target="_blank" rel="noopener noreferrer" className="text-primary font-medium hover:underline truncate">
+                      <a href={url.shortUrl} target="_blank" rel="noopener noreferrer" className="text-primary font-semibold text-lg hover:text-blue-400 transition-colors truncate">
                         {url.shortCode}
                       </a>
                       {url.active ? (
-                        <Badge variant="success">Active</Badge>
+                        <Badge variant="success" className="bg-green-500/10 text-green-400 border-green-500/20">Active</Badge>
                       ) : (
-                        <Badge variant="destructive">Disabled</Badge>
+                        <Badge variant="destructive" className="bg-red-500/10 text-red-400 border-red-500/20">Disabled</Badge>
                       )}
                     </div>
-                    <p className="text-sm text-muted-foreground truncate">{url.originalUrl}</p>
+                    <p className="text-sm text-gray-500 truncate group-hover:text-gray-400 transition-colors">{url.originalUrl}</p>
                   </div>
                   <div className="flex items-center gap-6">
                     <div className="text-right">
-                      <p className="text-sm font-medium text-foreground">{url.clickCount}</p>
-                      <p className="text-xs text-muted-foreground">Clicks</p>
+                      <p className="text-xl font-bold text-white">{url.clickCount}</p>
+                      <p className="text-xs text-gray-500 uppercase tracking-wider">Clicks</p>
                     </div>
-                    <Button variant="outline" size="sm" onClick={() => navigate(`/urls/${url.id}/analytics`)}>
+                    <Button variant="outline" size="sm" onClick={() => navigate(`/urls/${url.id}/analytics`)} className="border-gray-700 hover:bg-white/10 hover:text-white">
                       Analytics
                     </Button>
                   </div>

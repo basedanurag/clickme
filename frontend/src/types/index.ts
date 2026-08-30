@@ -36,3 +36,36 @@ export interface CreateUrlRequest {
   expiresAt?: string;
 }
 
+export interface AdminStatsDto {
+  totalUsers: number;
+  totalUrls: number;
+  totalClicks: number;
+  activeUsers: number;
+}
+
+export interface AdminUserDto {
+  id: number;
+  name: string;
+  email: string;
+  role: string;
+  provider: string;
+  urlCount: number;
+  clickCount: number;
+}
+
+export interface AuditLogDto {
+  id: number;
+  action: string;
+  details: string;
+  adminEmail: string;
+  timestamp: string;
+}
+
+export interface PageResponse<T> {
+  content: T[];
+  totalElements: number;
+  totalPages: number;
+  size: number;
+  number: number;
+}
+

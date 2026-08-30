@@ -33,16 +33,16 @@ export const Layout = ({ children }: { children: React.ReactNode }) => {
             to={item.href}
             onClick={() => setIsMobileMenuOpen(false)}
             className={cn(
-              'group flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors',
+              'group flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-all duration-300',
               isActive
-                ? 'bg-primary/10 text-primary'
-                : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground'
+                ? 'bg-primary/10 text-primary shadow-sm'
+                : 'text-muted-foreground hover:bg-white/5 hover:text-foreground'
             )}
           >
             <item.icon
               className={cn(
-                'mr-3 flex-shrink-0 h-5 w-5 transition-colors',
-                isActive ? 'text-primary' : 'text-muted-foreground group-hover:text-accent-foreground'
+                'mr-3 flex-shrink-0 h-5 w-5 transition-transform duration-300',
+                isActive ? 'text-primary' : 'text-muted-foreground group-hover:text-foreground group-hover:scale-110'
               )}
             />
             {item.name}
@@ -53,13 +53,13 @@ export const Layout = ({ children }: { children: React.ReactNode }) => {
   );
 
   return (
-    <div className="min-h-screen bg-background flex">
+    <div className="min-h-screen bg-background flex text-foreground selection:bg-primary/30">
       {/* Sidebar for desktop */}
-      <div className="hidden md:flex md:w-64 md:flex-col md:fixed md:inset-y-0 bg-card border-r border-border">
+      <div className="hidden md:flex md:w-64 md:flex-col md:fixed md:inset-y-0 bg-black/40 backdrop-blur-xl border-r border-border/30 z-20">
         <div className="flex-1 flex flex-col min-h-0">
-          <div className="flex items-center h-16 flex-shrink-0 px-4 border-b border-border">
-            <Link to="/dashboard" className="text-xl font-bold text-primary flex items-center gap-2">
-              <LinkIcon className="h-6 w-6" />
+          <div className="flex items-center h-20 flex-shrink-0 px-6 border-b border-border/30">
+            <Link to="/dashboard" className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-primary to-blue-400 flex items-center gap-2">
+              <LinkIcon className="h-6 w-6 text-primary" />
               ClickMe
             </Link>
           </div>
@@ -68,28 +68,28 @@ export const Layout = ({ children }: { children: React.ReactNode }) => {
               <NavLinks />
             </nav>
           </div>
-          <div className="flex-shrink-0 flex border-t border-border p-4">
+          <div className="flex-shrink-0 flex border-t border-border/30 p-4 bg-gradient-to-t from-black/60 to-transparent">
             <div className="flex-shrink-0 w-full group block">
               <div className="flex items-center">
                 <div>
-                  <div className="inline-block h-9 w-9 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold">
+                  <div className="inline-block h-10 w-10 rounded-full bg-primary/20 text-primary flex items-center justify-center font-bold ring-2 ring-primary/20">
                     {user?.name?.charAt(0)?.toUpperCase() || 'U'}
                   </div>
                 </div>
                 <div className="ml-3 flex-1 overflow-hidden">
-                  <p className="text-sm font-medium text-foreground truncate">{user?.name}</p>
-                  <p className="text-xs font-medium text-muted-foreground truncate">{user?.email}</p>
+                  <p className="text-sm font-semibold text-foreground truncate">{user?.name}</p>
+                  <p className="text-xs text-muted-foreground truncate">{user?.email}</p>
                 </div>
                 <button
                   onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-                  className="ml-auto p-2 text-muted-foreground hover:text-foreground rounded-full hover:bg-accent transition-colors"
+                  className="ml-auto p-2 text-muted-foreground hover:text-foreground rounded-full hover:bg-white/10 transition-colors"
                 >
                   {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
                 </button>
               </div>
               <button
                 onClick={handleLogout}
-                className="mt-4 w-full flex items-center justify-center gap-2 px-3 py-2 border border-border rounded-md text-sm font-medium text-muted-foreground hover:bg-destructive/10 hover:text-destructive hover:border-destructive/20 transition-colors"
+                className="mt-4 w-full flex items-center justify-center gap-2 px-3 py-2 border border-border/50 rounded-lg text-sm font-medium text-muted-foreground hover:bg-destructive/10 hover:text-destructive hover:border-destructive/30 transition-all duration-300"
               >
                 <LogOut size={16} />
                 Sign out
