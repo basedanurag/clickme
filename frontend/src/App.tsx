@@ -15,6 +15,7 @@ import CreateUrl from './pages/CreateUrl';
 import Analytics from './pages/Analytics';
 import QrCode from './pages/QrCode';
 import Settings from './pages/Settings';
+import OAuth2Callback from './pages/OAuth2Callback';
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { isAuthenticated, isLoading } = useAuth();
@@ -50,6 +51,7 @@ function AppRoutes() {
       <Route path="/" element={<PublicRoute><Landing /></PublicRoute>} />
       <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
       <Route path="/signup" element={<PublicRoute><Signup /></PublicRoute>} />
+      <Route path="/oauth2/callback" element={<PublicRoute><OAuth2Callback /></PublicRoute>} />
       
       <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
       <Route path="/urls" element={<ProtectedRoute><MyUrls /></ProtectedRoute>} />

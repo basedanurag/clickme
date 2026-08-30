@@ -37,6 +37,13 @@ public class AuthController {
         return ResponseEntity.ok(authService.login(request));
     }
 
+    @PostMapping("/oauth2/callback")
+    public ResponseEntity<AuthResponse> oauth2Callback(
+            @RequestParam("token") String token) {
+        
+        return ResponseEntity.ok(authService.oauth2Login(token));
+    }
+
     @GetMapping("/me")
     public ResponseEntity<UserResponse> me() {
         return ResponseEntity.ok(authService.getCurrentUser());

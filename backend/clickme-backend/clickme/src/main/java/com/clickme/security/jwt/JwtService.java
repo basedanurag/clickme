@@ -41,6 +41,30 @@ public class JwtService {
         return extractClaims(token).getSubject();
     }
 
+    public String generateExchangeToken(String email) {
+        Date now = new Date();
+        Date expiry = new Date(now.getTime() + 60000); // 60 seconds
+
+        return Jwts.builder()
+                .subject(email)
+                .claim("purpose", "oauth2_exchange")
+                .issuedAt(now)
+                .expiration(expiry)
+                .signWith(getSigningKey())
+                .compact();
+    }
+
+    public boolean isExchangeTokenValid(String token, String email) {
+        try {
+            Claims claims = extractClaims(token);
+            return email.equals(claims.getSubject())
+                    && "oauth2_exchange".equals(claims.get("purpose"))
+                    && claims.getExpiration().after(new Date());
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
     public boolean isTokenValid(String token, String email) {
         return email.equals(extractEmail(token))
                 && extractClaims(token).getExpiration().after(new Date());

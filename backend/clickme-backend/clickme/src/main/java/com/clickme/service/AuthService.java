@@ -11,6 +11,8 @@ public interface AuthService {
 
     AuthResponse login(LoginRequest request);
 
+    AuthResponse oauth2Login(String token);
+
     UserResponse getCurrentUser();
    
 }

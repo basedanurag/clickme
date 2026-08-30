@@ -10,5 +10,9 @@ export const authApi = {
     const response = await api.post('/auth/signup', userData);
     return response.data;
   },
+  oauth2Callback: async (token: string): Promise<AuthResponse> => {
+    const response = await api.post(`/auth/oauth2/callback?token=${token}`);
+    return response.data;
+  }
 };
 

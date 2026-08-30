@@ -87,6 +87,26 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
+    public AuthResponse oauth2Login(String token) {
+        String email = jwtService.extractEmail(token);
+        
+        if (!jwtService.isExchangeTokenValid(token, email)) {
+            throw new BadRequestException("Invalid or expired OAuth2 exchange token.");
+        }
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new BadRequestException("User not found."));
+
+        String jwt = jwtService.generateToken(user.getEmail());
+
+        return AuthResponse.builder()
+                .accessToken(jwt)
+                .tokenType("Bearer")
+                .message("OAuth2 Login successful.")
+                .build();
+    }
+
+    @Override
     public UserResponse getCurrentUser() {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if (!(principal instanceof CustomUserDetails userDetails)) {

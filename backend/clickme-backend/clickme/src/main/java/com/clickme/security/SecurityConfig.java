@@ -31,13 +31,16 @@ public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final JwtAuthenticationEntryPoint authenticationEntryPoint;
+    private final OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
 
     public SecurityConfig(
             JwtAuthenticationFilter jwtAuthenticationFilter,
-            JwtAuthenticationEntryPoint authenticationEntryPoint) {
+            JwtAuthenticationEntryPoint authenticationEntryPoint,
+            OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler) {
 
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
         this.authenticationEntryPoint = authenticationEntryPoint;
+        this.oAuth2AuthenticationSuccessHandler = oAuth2AuthenticationSuccessHandler;
     }
 
     @Bean
@@ -59,7 +62,9 @@ public class SecurityConfig {
                                 "/api/auth/**",
                                 "/api/health",
                                 "/swagger-ui/**",
-                                "/v3/api-docs/**")
+                                "/v3/api-docs/**",
+                                "/oauth2/**",
+                                "/login/**")
                         .permitAll()
 
                         .requestMatchers(HttpMethod.GET, "/{shortCode:[a-zA-Z0-9-_]+}")
@@ -67,6 +72,9 @@ public class SecurityConfig {
 
                         .anyRequest()
                         .authenticated())
+
+                .oauth2Login(oauth2 -> oauth2
+                        .successHandler(oAuth2AuthenticationSuccessHandler))
 
                 .addFilterBefore(
                         jwtAuthenticationFilter,
