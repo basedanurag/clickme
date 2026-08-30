@@ -23,4 +23,10 @@ public interface UrlRepository extends JpaRepository<Url, Long> {
     @org.springframework.data.jpa.repository.Modifying(clearAutomatically = true)
     @org.springframework.data.jpa.repository.Query("UPDATE Url u SET u.clickCount = u.clickCount + 1 WHERE u.id = :id")
     void incrementClickCount(@org.springframework.data.repository.query.Param("id") Long id);
+
+    long countByCreatedAtAfter(java.time.LocalDateTime date);
+
+    org.springframework.data.domain.Page<Url> findAll(org.springframework.data.domain.Pageable pageable);
+
+    org.springframework.data.domain.Page<Url> findByUserId(Long userId, org.springframework.data.domain.Pageable pageable);
 }

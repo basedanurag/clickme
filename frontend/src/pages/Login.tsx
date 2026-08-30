@@ -117,6 +117,12 @@ export default function Login() {
             Sign up
           </Link>
         </p>
+
+        <div className="mt-4 text-center">
+          <Link to="/admin/login" className="text-xs text-muted-foreground hover:text-primary transition-colors">
+            Admin Portal Access
+          </Link>
+        </div>
       </div>
     </div>
   );

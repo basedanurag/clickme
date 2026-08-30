@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.clickme.dto.request.LoginRequest;
 import com.clickme.dto.request.SignupRequest;
 import com.clickme.dto.response.AuthResponse;
+import org.springframework.beans.factory.annotation.Value;
 import com.clickme.dto.response.UserResponse;
 import com.clickme.entity.User;
 import com.clickme.enums.AuthProvider;
@@ -26,6 +27,9 @@ public class AuthServiceImpl implements AuthService {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
+
+    @Value("${admin.email:}")
+    private String adminEmail;
 
     public AuthServiceImpl(UserRepository userRepository,
                            PasswordEncoder passwordEncoder,
@@ -45,11 +49,13 @@ public class AuthServiceImpl implements AuthService {
             throw new BadRequestException("Email already exists.");
         }
 
+        Role assignedRole = request.getEmail().equalsIgnoreCase(adminEmail) ? Role.ROLE_ADMIN : Role.ROLE_USER;
+
         User user = User.builder()
                 .name(request.getName())
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
-                .role(Role.ROLE_USER)
+                .role(assignedRole)
                 .provider(AuthProvider.LOCAL)
                 .active(true)
                 .build();
@@ -117,6 +123,7 @@ public class AuthServiceImpl implements AuthService {
                 .id(user.getId())
                 .name(user.getName())
                 .email(user.getEmail())
+                .role(user.getRole().name())
                 .build();
     }
 }

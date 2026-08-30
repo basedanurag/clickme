@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, Link as LinkIcon, Settings, LogOut, Menu, X, Sun, Moon } from 'lucide-react';
+import { LayoutDashboard, Link as LinkIcon, Settings, LogOut, Menu, X, Sun, Moon, ShieldAlert } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { useTheme } from '../../context/ThemeContext';
 import { cn } from '../../utils/cn';

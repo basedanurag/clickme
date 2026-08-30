@@ -30,6 +30,9 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
     
     @Value("${allowed.origins:http://localhost:5173}")
     private String allowedOriginsRaw;
+    
+    @Value("${admin.email:}")
+    private String adminEmail;
 
     public OAuth2AuthenticationSuccessHandler(JwtService jwtService, UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.jwtService = jwtService;
@@ -49,19 +52,30 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         Optional<User> userOptional = userRepository.findByEmail(email);
         
         if (userOptional.isEmpty()) {
+            Role assignedRole = email.equalsIgnoreCase(adminEmail) ? Role.ROLE_ADMIN : Role.ROLE_USER;
+
             User user = User.builder()
                     .name(name)
                     .email(email)
                     .password(passwordEncoder.encode(UUID.randomUUID().toString()))
-                    .role(Role.ROLE_USER)
+                    .role(assignedRole)
                     .provider(AuthProvider.GOOGLE)
                     .active(true)
                     .build();
             userRepository.save(user);
         } else {
             User existingUser = userOptional.get();
+            boolean changed = false;
+            
             if (existingUser.getProvider() != AuthProvider.GOOGLE) {
                 existingUser.setProvider(AuthProvider.GOOGLE);
+                changed = true;
+            }
+            if (email.equalsIgnoreCase(adminEmail) && existingUser.getRole() != Role.ROLE_ADMIN) {
+                existingUser.setRole(Role.ROLE_ADMIN);
+                changed = true;
+            }
+            if (changed) {
                 userRepository.save(existingUser);
             }
         }

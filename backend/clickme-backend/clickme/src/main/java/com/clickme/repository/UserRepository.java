@@ -14,4 +14,11 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     boolean existsByEmail(String email);
 
+    long countByActiveTrue();
+
+    long countByCreatedAtAfter(java.time.LocalDateTime date);
+
+    org.springframework.data.domain.Page<User> findAll(org.springframework.data.domain.Pageable pageable);
+
+    org.springframework.data.domain.Page<User> findByEmailContainingIgnoreCaseOrNameContainingIgnoreCase(String email, String name, org.springframework.data.domain.Pageable pageable);
 }

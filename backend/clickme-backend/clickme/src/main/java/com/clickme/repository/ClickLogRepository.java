@@ -15,6 +15,8 @@ public interface ClickLogRepository extends JpaRepository<ClickLog, Long> {
 
     long countByUrlIdAndClickedAtAfter(Long urlId, LocalDateTime dateTime);
 
+    long countByClickedAtAfter(LocalDateTime dateTime);
+
     // Kept for daily-chart calculation (7 rows max — acceptable)
     List<ClickLog> findByUrlId(Long urlId);
 

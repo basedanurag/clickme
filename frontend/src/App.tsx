@@ -16,6 +16,16 @@ import Analytics from './pages/Analytics';
 import QrCode from './pages/QrCode';
 import Settings from './pages/Settings';
 import OAuth2Callback from './pages/OAuth2Callback';
+import AdminLogin from './pages/AdminLogin';
+
+// Admin Imports
+import { AdminRoute } from './components/layout/AdminRoute';
+import { AdminLayout } from './components/layout/AdminLayout';
+import { AdminDashboard } from './pages/admin/AdminDashboard';
+import { AdminUsers } from './pages/admin/AdminUsers';
+import { AdminUserDetails } from './pages/admin/AdminUserDetails';
+import { AdminUrls } from './pages/admin/AdminUrls';
+import { AdminAuditLogs } from './pages/admin/AdminAuditLogs';
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { isAuthenticated, isLoading } = useAuth();
@@ -50,6 +60,7 @@ function AppRoutes() {
     <Routes>
       <Route path="/" element={<PublicRoute><Landing /></PublicRoute>} />
       <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
+      <Route path="/admin/login" element={<PublicRoute><AdminLogin /></PublicRoute>} />
       <Route path="/signup" element={<PublicRoute><Signup /></PublicRoute>} />
       <Route path="/oauth2/callback" element={<PublicRoute><OAuth2Callback /></PublicRoute>} />
       
@@ -59,6 +70,18 @@ function AppRoutes() {
       <Route path="/urls/:id/analytics" element={<ProtectedRoute><Analytics /></ProtectedRoute>} />
       <Route path="/urls/:id/qr" element={<ProtectedRoute><QrCode /></ProtectedRoute>} />
       <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
+          
+      {/* Admin Routes */}
+      <Route element={<AdminRoute />}>
+        <Route element={<AdminLayout />}>
+          <Route path="/admin" element={<AdminDashboard />} />
+          <Route path="/admin/users" element={<AdminUsers />} />
+          <Route path="/admin/users/:id" element={<AdminUserDetails />} />
+          <Route path="/admin/urls" element={<AdminUrls />} />
+          <Route path="/admin/audit-logs" element={<AdminAuditLogs />} />
+        </Route>
+      </Route>
+      
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
