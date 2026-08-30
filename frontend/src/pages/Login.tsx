@@ -24,7 +24,8 @@ export default function Login() {
   React.useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     if (params.get('error') === 'oauth2_failed') {
-      toast.error('Google login failed or was cancelled. Please try again.');
+      const details = params.get('details');
+      toast.error(`Google login failed. Details: ${details || 'Unknown Error'}`);
       // Remove the query parameter without reloading
       window.history.replaceState({}, document.title, window.location.pathname);
     }
