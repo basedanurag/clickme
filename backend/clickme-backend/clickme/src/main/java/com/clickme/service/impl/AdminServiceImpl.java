@@ -185,7 +185,7 @@ public class AdminServiceImpl implements AdminService {
 
     private AdminUserDto mapToAdminUserDto(User user) {
         long urlCount = user.getUrls().size();
-        long clickCount = user.getUrls().stream().mapToLong(Url::getClickCount).sum();
+        long clickCount = user.getUrls().stream().mapToLong(url -> url.getClickCount()).sum();
         
         return AdminUserDto.builder()
                 .id(user.getId())
