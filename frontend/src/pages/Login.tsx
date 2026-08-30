@@ -21,6 +21,15 @@ export default function Login() {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
 
+  React.useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('error') === 'oauth2_failed') {
+      toast.error('Google login failed or was cancelled. Please try again.');
+      // Remove the query parameter without reloading
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
+  }, []);
+
   const { register, handleSubmit, formState: { errors } } = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
   });
